@@ -1,0 +1,19 @@
+version: "3.8" # ← これ削除してもOK
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: pg-test
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data # 永続化
+      - ./initdb:/docker-entrypoint-initdb.d # 初期スクリプト
+    restart: unless-stopped
+
+volumes:
+  pgdata: {} # ← これは services の外（ルート）で定義します
