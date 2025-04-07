@@ -84,22 +84,4 @@ def video_to_dict(video: Video) -> Dict[str, Any]:
     }
 
 
-def create_sample_videos() -> List[Video]:
-    """
-    テスト用のサンプル動画データを生成する
-    
-    Returns:
-        サンプル動画のリスト
-    """
-    return [
-        Video(id="001", title="サンプル動画1", duration=120),  # 2分
-        Video(id="002", title="サンプル動画2", duration=180),  # 3分
-        Video(id="003", title="サンプル動画3", duration=300),  # 5分
-        Video(id="004", title="サンプル動画4", duration=240),  # 4分
-        Video(id="005", title="サンプル動画5", duration=150),  # 2分30秒
-        Video(id="006", title="サンプル動画6", duration=360),  # 6分
-        Video(id="007", title="サンプル動画7", duration=420),  # 7分
-        Video(id="008", title="サンプル動画8", duration=90),   # 1分30秒
-        Video(id="009", title="サンプル動画9", duration=540),  # 9分
-        Video(id="010", title="サンプル動画10", duration=600)  # 10分
-    ]
+# create_sample_videos関数はMemoryVideoRepositoryに移動しました

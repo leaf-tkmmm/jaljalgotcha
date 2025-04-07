@@ -5,14 +5,36 @@ Flaskを使用したWeb APIの提供
 from flask import Flask, request, jsonify, render_template_string
 
 from .models import Video
-from .utils import parse_duration, video_collection_to_dict, create_sample_videos
-from .video import get_video_combinations
+from .utils import parse_duration, video_collection_to_dict
+from .repositories.memory_repository import MemoryVideoRepository
+from .repositories.youtube_repository import YouTubeVideoRepository
+from .services.video_service import VideoService
+from .di.container import container
+
+# サービス設定
+def setup_services(use_youtube_api: bool = False):
+    """
+    アプリケーションサービスの設定
+    
+    Args:
+        use_youtube_api: YouTubeのAPIを使用するかどうか
+    """
+    if use_youtube_api:
+        # YouTubeリポジトリを使用
+        # API_KEYは環境変数から自動的に取得
+        container.register('video_repository', lambda c: YouTubeVideoRepository())
+    else:
+        # メモリベースのリポジトリを使用
+        container.register('video_repository', lambda c: MemoryVideoRepository())
+    
+    # ビデオサービスを登録
+    container.register('video_service', lambda c: VideoService(c.get('video_repository')))
+
+# デフォルトでメモリベースのリポジトリを使用
+setup_services(use_youtube_api=False)
 
 # Flaskアプリケーションの初期化
 app = Flask(__name__)
-
-# サンプル動画データ（実際の環境では、データベースやAPIから取得）
-SAMPLE_VIDEOS = create_sample_videos()
 
 
 @app.route('/')
@@ -95,6 +117,18 @@ def index():
             <input type="text" id="combinations" name="combinations" value="3">
         </div>
         
+        <div class="form-group">
+            <label>データソース:</label>
+            <div>
+                <input type="radio" id="use_memory" name="data_source" value="memory" checked>
+                <label for="use_memory">メモリ内サンプルデータ</label>
+            </div>
+            <div>
+                <input type="radio" id="use_youtube" name="data_source" value="youtube">
+                <label for="use_youtube">YouTube API</label>
+            </div>
+        </div>
+        
         <button onclick="getVideoCombinations()">動画組み合わせを取得</button>
         
         <div id="result"></div>
@@ -109,8 +143,12 @@ def index():
                     return;
                 }
                 
+                // データソースの選択を取得
+                const dataSource = document.querySelector('input[name="data_source"]:checked').value;
+                const useYoutube = dataSource === 'youtube';
+                
                 // APIリクエスト
-                fetch(`/api/combinations?duration=${duration}&attempts=${combinations}`)
+                fetch(`/api/combinations?duration=${duration}&attempts=${combinations}&use_youtube=${useYoutube}`)
                     .then(response => response.json())
                     .then(data => {
                         const resultDiv = document.getElementById('result');
@@ -173,6 +211,7 @@ def get_combinations():
     Query Parameters:
         duration (str): 希望する動画時間（分単位または HH:MM:SS形式）
         attempts (int, optional): 生成する組み合わせの数、デフォルトは3
+        use_youtube (bool, optional): YouTubeのAPIを使用するかどうか、デフォルトはFalse
     
     Returns:
         JSON: 動画の組み合わせリスト
@@ -180,6 +219,7 @@ def get_combinations():
     # リクエストパラメータを取得
     duration_str = request.args.get('duration', '')
     attempts = int(request.args.get('attempts', 3))
+    use_youtube = request.args.get('use_youtube', 'false').lower() == 'true'
     
     # パラメータのバリデーション
     if not duration_str:
@@ -195,8 +235,26 @@ def get_combinations():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     
+    # リポジトリを設定 (YouTubeかメモリかを切り替え)
+    setup_services(use_youtube_api=use_youtube)
+    
+    # ビデオサービスを取得
+    video_service = container.get('video_service')
+    
     # 動画の組み合わせを取得
-    combinations = get_video_combinations(SAMPLE_VIDEOS, target_duration, attempts)
+    try:
+        combinations = video_service.get_video_combinations(target_duration, attempts)
+        
+        # 結果が空でYouTube APIを使用している場合は、API設定が正しくない可能性がある
+        if not combinations and use_youtube:
+            from .config import YOUTUBE_API_KEY
+            if not YOUTUBE_API_KEY or YOUTUBE_API_KEY == "your_youtube_api_key_here":
+                return jsonify({
+                    "error": "YouTube API キーが設定されていません。.envファイルで'YOUTUBE_API_KEY'を設定してください。",
+                    "hint": "YouTubeデータAPIキーを取得して.envファイルに設定する必要があります。"
+                }), 500
+    except Exception as e:
+        return jsonify({"error": f"エラーが発生しました：{str(e)}"}), 500
     
     # 結果をJSONに変換
     result = [video_collection_to_dict(combo) for combo in combinations]
