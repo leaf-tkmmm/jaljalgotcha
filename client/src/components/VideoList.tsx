@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { Typography, Paper, Box, Divider } from "@mui/material";
 import VideoListItem from "./VideoListItem";
 import { VideoCombination } from "../types";
@@ -7,50 +7,106 @@ interface VideoListProps {
   combinations: VideoCombination[];
 }
 
-const VideoList: React.FC<VideoListProps> = ({ combinations }) => {
-  if (combinations.length === 0) {
+const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
+  ({ combinations }, ref) => {
+    if (combinations.length === 0) {
+      return (
+        <Paper
+          sx={{
+            p: 6,
+            textAlign: "center",
+            borderRadius: 2,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          }}
+        >
+          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+            条件に合う組み合わせが見つかりませんでした。
+          </Typography>
+        </Paper>
+      );
+    }
+
     return (
-      <Paper className="p-6 text-center">
-        <Typography variant="subtitle1">
-          条件に合う組み合わせが見つかりませんでした。
+      <Box sx={{ mt: 5 }} ref={ref}>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            mb: 4,
+            fontWeight: "medium",
+            color: "primary.main",
+            pl: 1,
+          }}
+        >
+          動画の組み合わせ ({combinations.length})
         </Typography>
-      </Paper>
+
+        {combinations.map((combo, index) => (
+          <Paper
+            key={index}
+            sx={{
+              p: { xs: 3, sm: 4 },
+              mb: 4,
+              borderRadius: 2,
+              transition: "all 0.2s ease-in-out",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              "&:hover": {
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+                transform: "translateY(-2px)",
+              },
+            }}
+          >
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: 2,
+                  fontWeight: "medium",
+                  color: "text.primary",
+                }}
+              >
+                組み合わせ {index + 1}
+              </Typography>
+              <Divider sx={{ mb: 3 }} />
+            </Box>
+
+            <Box sx={{ px: { xs: 0, sm: 1 } }}>
+              {combo.videos.map((video) => (
+                <VideoListItem key={video.id} video={video} />
+              ))}
+            </Box>
+
+            <Paper
+              sx={{
+                p: 3,
+                mt: 4,
+                bgcolor: "rgba(0, 0, 0, 0.02)",
+                borderRadius: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ mr: 4, fontWeight: "medium" }}
+                >
+                  <strong>合計時間:</strong> {combo.total_time_formatted}
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: "medium" }}>
+                  <strong>残り時間:</strong> {combo.remaining_time_formatted}
+                </Typography>
+              </Box>
+            </Paper>
+          </Paper>
+        ))}
+      </Box>
     );
   }
-
-  return (
-    <div>
-      <Typography variant="h5" component="h2" className="mb-4">
-        動画の組み合わせ ({combinations.length})
-      </Typography>
-
-      {combinations.map((combo, index) => (
-        <Paper key={index} className="p-4 mb-6">
-          <Box className="mb-3">
-            <Typography variant="h6" className="mb-2">
-              組み合わせ {index + 1}
-            </Typography>
-            <Divider />
-          </Box>
-
-          {combo.videos.map((video) => (
-            <VideoListItem key={video.id} video={video} />
-          ))}
-
-          <Paper className="p-3 mt-4 bg-gray-50">
-            <Box className="flex justify-between flex-wrap">
-              <Typography variant="body1" className="mr-4">
-                <strong>合計時間:</strong> {combo.total_time_formatted}
-              </Typography>
-              <Typography variant="body1">
-                <strong>残り時間:</strong> {combo.remaining_time_formatted}
-              </Typography>
-            </Box>
-          </Paper>
-        </Paper>
-      ))}
-    </div>
-  );
-};
+);
 
 export default VideoList;
