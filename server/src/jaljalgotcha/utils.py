@@ -2,7 +2,7 @@
 ユーティリティ関数
 """
 from datetime import timedelta
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 from .models import Video, VideoCollection
 
@@ -82,6 +82,3 @@ def video_to_dict(video: Video) -> Dict[str, Any]:
         "duration_formatted": format_duration(video.duration),
         "url": video.url
     }
-
-
-# create_sample_videos関数はMemoryVideoRepositoryに移動しました

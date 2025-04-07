@@ -4,14 +4,13 @@ YouTube API を使用した動画リポジトリ実装
 import re
 import logging
 from typing import List, Optional, Dict, Any, Tuple
-import random
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from ..models import Video
 from .interfaces import VideoRepository
-from ..config import YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID
+from ..config import YOUTUBE_API_KEY
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
@@ -20,16 +19,12 @@ logger = logging.getLogger(__name__)
 class YouTubeVideoRepository(VideoRepository):
     """YouTube API を使用した動画リポジトリの実装"""
     
-    def __init__(self, api_key: str = None):
-        """
-        初期化
-        
-        Args:
-            api_key: YouTube Data API のキー（未指定の場合は環境変数から取得）
-        """
-        self.api_key = api_key or YOUTUBE_API_KEY
+    def __init__(self):
+        self.api_key = YOUTUBE_API_KEY
         if not self.api_key:
             logger.warning("YouTube API キーが設定されていません。")
+
+        self.youtube_channel_id = "UCf-wG6PlxW7rpixx1tmODJw"
         
         # YouTube APIクライアントの初期化
         self.youtube_client = self._initialize_youtube_client() if self.api_key else None
@@ -55,17 +50,16 @@ class YouTubeVideoRepository(VideoRepository):
         try:
             # フィルター設定
             filters = filters or {}
-            channel_id = filters.get('channel_id', YOUTUBE_CHANNEL_ID)
             max_results = min(int(filters.get('max_results', 50)), 50)  # YouTube APIの上限は50
             order = filters.get('order', 'date') # デフォルトを新しい順に変更
             
-            if not channel_id:
+            if not self.youtube_channel_id:
                 logger.error("YouTube チャンネルIDが設定されていません。")
                 raise ValueError("YouTube チャンネルIDが設定されていません。")
 
             # 検索リクエスト (チャンネルIDで検索)
             search_response = self.youtube_client.search().list(
-                channelId=channel_id,
+                channelId=self.youtube_channel_id,
                 part='id', # snippetは不要なのでidのみ取得
                 maxResults=max_results,
                 type='video',
@@ -76,7 +70,7 @@ class YouTubeVideoRepository(VideoRepository):
             video_ids = [item['id']['videoId'] for item in search_response.get('items', [])]
             
             if not video_ids:
-                logger.warning(f"チャンネルID '{channel_id}' に動画が見つかりませんでした。")
+                logger.warning(f"チャンネルID '{self.youtube_channel_id}' に動画が見つかりませんでした。")
                 return []
             
             # 動画の詳細情報を取得
@@ -106,10 +100,10 @@ class YouTubeVideoRepository(VideoRepository):
             
         except HttpError as e:
             logger.error(f"YouTube API エラー: {e}")
-            return self._get_dummy_videos()
+            raise ValueError("データの取得に失敗しました。YouTube APIのエラーが発生しました。")
         except Exception as e:
             logger.error(f"予期しないエラー: {e}")
-            return self._get_dummy_videos()
+            raise ValueError("予期しないエラーが発生しました。")
     
     def _initialize_youtube_client(self):
         """
