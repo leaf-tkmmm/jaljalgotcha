@@ -50,7 +50,7 @@ class YouTubeVideoRepository(VideoRepository):
         """
         if not self.youtube_client:
             logger.warning("YouTube API クライアントが初期化されていません。ダミーデータを返します。")
-            return self._get_dummy_videos()
+            raise ValueError("YouTube API クライアントが初期化されていません。")
         
         try:
             # フィルター設定
@@ -61,7 +61,7 @@ class YouTubeVideoRepository(VideoRepository):
             
             if not channel_id:
                 logger.error("YouTube チャンネルIDが設定されていません。")
-                return self._get_dummy_videos()
+                raise ValueError("YouTube チャンネルIDが設定されていません。")
 
             # 検索リクエスト (チャンネルIDで検索)
             search_response = self.youtube_client.search().list(
@@ -146,36 +146,3 @@ class YouTubeVideoRepository(VideoRepository):
         # 合計時間（秒）を計算
         return hours * 3600 + minutes * 60 + seconds
     
-    def _get_dummy_videos(self) -> List[Video]:
-        """
-        テスト用のダミー動画データを生成する（API接続に失敗した場合のフォールバック）
-        
-        Returns:
-            ダミー動画のリスト
-        """
-        video_titles = [
-            "JalJal公式: 面白い瞬間集",
-            "JalJal: ベストプレイ集2024",
-            "JalJal: ゲーム実況Part1",
-            "JalJal: ゲーム実況Part2",
-            "JalJalメンバー: 爆笑トーク",
-            "JalJal: 実況プレイ特集",
-            "JalJal公式: 人気シーン集",
-            "JalJal: 最新ゲームレビュー",
-            "JalJalチャレンジ集",
-            "JalJal: 視聴者質問コーナー"
-        ]
-        
-        videos = []
-        for i, title in enumerate(video_titles, 1):
-            # ランダムな時間（1分～10分）
-            duration = random.randint(60, 600)
-            video_id = f"yt{i:03d}"
-            videos.append(Video(
-                id=video_id,
-                title=title,
-                duration=duration,
-                url=f"https://www.youtube.com/watch?v={video_id}"
-            ))
-        
-        return videos
