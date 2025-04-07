@@ -9,7 +9,7 @@ const VideoItemSkeleton: React.FC = () => {
   return (
     <Paper
       sx={{
-        p: 3,
+        p: { xs: 2, sm: 3 },
         mb: 2,
         borderRadius: 2,
         boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
@@ -27,18 +27,27 @@ const VideoItemSkeleton: React.FC = () => {
           variant="text"
           sx={{
             width: { xs: "100%", sm: "70%" },
-            height: 32,
+            height: { xs: 28, sm: 32 },
             mb: { xs: 1, sm: 0 },
           }}
         />
         <Skeleton
           variant="rounded"
-          width={90}
-          height={32}
-          sx={{ borderRadius: "16px" }}
+          sx={{
+            width: 90,
+            height: { xs: 28, sm: 32 },
+            borderRadius: "16px",
+          }}
         />
       </Box>
-      <Skeleton variant="text" sx={{ width: "100%", height: 24, mt: 1.5 }} />
+      <Skeleton
+        variant="text"
+        sx={{
+          width: "100%",
+          height: { xs: 20, sm: 24 },
+          mt: 1.5,
+        }}
+      />
     </Paper>
   );
 };
@@ -54,7 +63,14 @@ const CombinationSkeleton: React.FC = () => {
       }}
     >
       <Box sx={{ mb: 3 }}>
-        <Skeleton variant="text" sx={{ width: "30%", height: 32, mb: 2 }} />
+        <Skeleton
+          variant="text"
+          sx={{
+            width: "30%",
+            height: { xs: 28, sm: 32 },
+            mb: 2,
+          }}
+        />
         <Divider sx={{ mb: 3 }} />
       </Box>
 
@@ -66,7 +82,7 @@ const CombinationSkeleton: React.FC = () => {
 
       <Paper
         sx={{
-          p: 3,
+          p: { xs: 2, sm: 3 },
           mt: 4,
           bgcolor: "rgba(0, 0, 0, 0.02)",
           borderRadius: 2,
@@ -75,12 +91,26 @@ const CombinationSkeleton: React.FC = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: { xs: "flex-start", sm: "space-between" },
+            flexDirection: { xs: "column", sm: "row" },
             flexWrap: "wrap",
           }}
         >
-          <Skeleton variant="text" sx={{ width: "40%", height: 24 }} />
-          <Skeleton variant="text" sx={{ width: "40%", height: 24 }} />
+          <Skeleton
+            variant="text"
+            sx={{
+              width: "40%",
+              height: { xs: 20, sm: 24 },
+              mb: { xs: 1, sm: 0 },
+            }}
+          />
+          <Skeleton
+            variant="text"
+            sx={{
+              width: "40%",
+              height: { xs: 20, sm: 24 },
+            }}
+          />
         </Box>
       </Paper>
     </Paper>
@@ -92,7 +122,12 @@ const VideoListSkeleton: React.FC<VideoListSkeletonProps> = ({ count = 2 }) => {
     <Box sx={{ mt: 5 }}>
       <Skeleton
         variant="text"
-        sx={{ width: "40%", height: 40, mb: 4, ml: 1 }}
+        sx={{
+          width: "40%",
+          height: { xs: 32, sm: 40 },
+          mb: { xs: 3, sm: 4 },
+          ml: 1,
+        }}
       />
 
       {Array.from(new Array(count)).map((_, index) => (

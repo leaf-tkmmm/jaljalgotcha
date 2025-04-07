@@ -46,7 +46,12 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
       <Typography
         variant="h5"
         component="h2"
-        sx={{ mb: 4, fontWeight: "medium", color: "primary.main" }}
+        sx={{
+          mb: { xs: 3, sm: 4 },
+          fontWeight: "medium",
+          color: "primary.main",
+          fontSize: { xs: "1.25rem", sm: "1.5rem" },
+        }}
       >
         動画の時間組み合わせ検索
       </Typography>
@@ -103,13 +108,16 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
                   row
                   value={dataSource}
                   onChange={(e) => setDataSource(e.target.value)}
-                  sx={{ justifyContent: "space-around" }}
+                  sx={{
+                    justifyContent: { xs: "flex-start", sm: "space-around" },
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
                 >
                   <FormControlLabel
                     value="memory"
                     control={<Radio color="primary" />}
                     label="メモリ内サンプルデータ"
-                    sx={{ mr: 4 }}
+                    sx={{ mr: 4, mb: { xs: 1, sm: 0 } }}
                   />
                   <FormControlLabel
                     value="youtube"
@@ -121,7 +129,13 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
             </Box>
           </>
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "center", sm: "flex-end" },
+              mt: 2,
+            }}
+          >
             <Button
               variant="contained"
               color="primary"
@@ -129,10 +143,12 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
               disabled={isLoading}
               size="large"
               sx={{
-                px: 4,
+                px: { xs: 3, sm: 4 },
                 py: 1,
                 borderRadius: 2,
                 boxShadow: 3,
+                fontSize: { xs: "0.875rem", sm: "1rem" },
+                width: { xs: "100%", sm: "auto" },
                 "&:hover": {
                   boxShadow: 4,
                 },

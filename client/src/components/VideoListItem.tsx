@@ -10,7 +10,7 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
   return (
     <Paper
       sx={{
-        p: 3,
+        p: { xs: 2, sm: 3 },
         mb: 2,
         borderRadius: 2,
         transition: "all 0.2s ease-in-out",
@@ -38,9 +38,14 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
             mr: 2,
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            whiteSpace: { xs: "normal", sm: "nowrap" },
             maxWidth: { xs: "100%", sm: "70%" },
             mb: { xs: 1, sm: 0 },
+            fontSize: { xs: "0.95rem", sm: "1.125rem" },
+            lineHeight: { xs: 1.4, sm: 1.6 },
+            display: "-webkit-box",
+            WebkitLineClamp: { xs: 2, sm: 1 },
+            WebkitBoxOrient: "vertical",
           }}
         >
           {video.title}
@@ -51,9 +56,11 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
           size="medium"
           sx={{
             fontWeight: "bold",
-            minWidth: "90px",
+            minWidth: "85px",
             textAlign: "center",
             borderRadius: "16px",
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+            height: { xs: "28px", sm: "32px" },
           }}
         />
       </Box>
@@ -65,7 +72,9 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
             mt: 1.5,
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            whiteSpace: { xs: "normal", sm: "nowrap" },
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+            wordBreak: "break-all",
           }}
         >
           <a

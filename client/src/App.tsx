@@ -117,13 +117,23 @@ function App() {
           <Typography
             variant="h3"
             component="h1"
-            sx={{ mb: 2, textAlign: "center", fontWeight: "bold" }}
+            sx={{
+              mb: 2,
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+            }}
           >
             JalJalGotcha
           </Typography>
           <Typography
             variant="subtitle1"
-            sx={{ textAlign: "center", color: "text.secondary", mb: 4 }}
+            sx={{
+              textAlign: "center",
+              color: "text.secondary",
+              mb: 4,
+              fontSize: { xs: "0.875rem", sm: "1rem" },
+            }}
           >
             動画の時間組み合わせシステム
           </Typography>

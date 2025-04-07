@@ -32,10 +32,11 @@ const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
           variant="h5"
           component="h2"
           sx={{
-            mb: 4,
+            mb: { xs: 3, sm: 4 },
             fontWeight: "medium",
             color: "primary.main",
             pl: 1,
+            fontSize: { xs: "1.25rem", sm: "1.5rem" },
           }}
         >
           動画の組み合わせ ({combinations.length})
@@ -63,6 +64,7 @@ const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
                   mb: 2,
                   fontWeight: "medium",
                   color: "text.primary",
+                  fontSize: { xs: "1.125rem", sm: "1.25rem" },
                 }}
               >
                 組み合わせ {index + 1}
@@ -87,17 +89,29 @@ const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: { xs: "flex-start", sm: "space-between" },
+                  flexDirection: { xs: "column", sm: "row" },
                   flexWrap: "wrap",
                 }}
               >
                 <Typography
                   variant="body1"
-                  sx={{ mr: 4, fontWeight: "medium" }}
+                  sx={{
+                    mr: 4,
+                    fontWeight: "medium",
+                    mb: { xs: 1, sm: 0 },
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  }}
                 >
                   <strong>合計時間:</strong> {combo.total_time_formatted}
                 </Typography>
-                <Typography variant="body1" sx={{ fontWeight: "medium" }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "medium",
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  }}
+                >
                   <strong>残り時間:</strong> {combo.remaining_time_formatted}
                 </Typography>
               </Box>

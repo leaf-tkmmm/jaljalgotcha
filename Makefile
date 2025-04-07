@@ -12,7 +12,7 @@ help:
 
 # Start the Python server with system Python
 server:
-	cd server && .venv/bin/python -m flask --app src.jaljalgotcha.main run --debug
+	cd server && .venv/bin/python -m flask --app src.jaljalgotcha.main run --debug --host=0.0.0.0
 
 # Start the client dev server
 client:
