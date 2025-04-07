@@ -44,8 +44,9 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
             fontSize: { xs: "0.95rem", sm: "1.125rem" },
             lineHeight: { xs: 1.4, sm: 1.6 },
             display: "-webkit-box",
-            WebkitLineClamp: { xs: 2, sm: 1 },
+            WebkitLineClamp: { xs: 3, sm: 1 },
             WebkitBoxOrient: "vertical",
+            wordBreak: "break-word",
           }}
         >
           {video.title}
@@ -72,9 +73,12 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
             mt: 1.5,
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: { xs: "normal", sm: "nowrap" },
+            whiteSpace: { xs: "normal", sm: "normal" },
             fontSize: { xs: "0.75rem", sm: "0.875rem" },
             wordBreak: "break-all",
+            display: "-webkit-box",
+            WebkitLineClamp: { xs: 2, sm: 2 },
+            WebkitBoxOrient: "vertical",
           }}
         >
           <a
