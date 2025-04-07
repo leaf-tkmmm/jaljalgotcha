@@ -13,6 +13,15 @@ class Video:
     duration: int  # 動画時間（秒）
     url: Optional[str] = None  # 動画URL（オプション）
     
+    def __post_init__(self):
+        """初期化後の処理"""
+        # 型変換を確実に行う
+        self.id = str(self.id) if self.id is not None else ""
+        self.title = str(self.title) if self.title is not None else ""
+        self.duration = int(self.duration) if self.duration is not None else 0
+        if self.url is not None:
+            self.url = str(self.url)
+    
     def duration_minutes(self) -> float:
         """動画時間を分単位で返す"""
         return self.duration / 60
