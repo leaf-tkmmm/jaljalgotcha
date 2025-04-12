@@ -19,6 +19,38 @@ class VideoService:
             video_repository: 動画リポジトリのインスタンス
         """
         self.video_repository = video_repository
+
+    def _convert_filters(self, filters: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        フィルターをYouTube API形式からDB形式に変換する
+
+        Args:
+            filters: 元のフィルター条件
+
+        Returns:
+            変換後のフィルター条件
+        """
+        if not filters:
+            return {}
+
+        converted_filters = {}
+
+        # YouTube APIのフィルターをDB用に変換
+        if 'max_results' in filters:
+            converted_filters['limit'] = filters['max_results']
+        if 'order' in filters:
+            converted_filters['order_by'] = filters['order']
+            converted_filters['order_dir'] = 'desc' if filters['order'] == 'date' else 'asc'
+
+        # DB固有のフィルターを追加
+        if 'max_duration' in filters:
+            converted_filters['max_duration'] = filters['max_duration']
+        if 'min_likes' in filters:
+            converted_filters['min_likes'] = filters['min_likes']
+        if 'min_views' in filters:
+            converted_filters['min_views'] = filters['min_views']
+
+        return converted_filters
     
     def get_video_combinations(self, target_duration: int, 
                               attempts: int = 3,
@@ -34,6 +66,9 @@ class VideoService:
         Returns:
             動画コレクションのリスト
         """
+        # フィルターを変換
+        filters = self._convert_filters(filters)
+
         # リポジトリから動画を取得
         videos = self.video_repository.get_videos(filters)
         
