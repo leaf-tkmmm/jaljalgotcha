@@ -75,10 +75,16 @@ def video_to_dict(video: Video) -> Dict[str, Any]:
     Returns:
         辞書形式のデータ
     """
-    return {
+    result = {
         "id": video.id,
         "title": video.title,
         "duration": video.duration,
         "duration_formatted": format_duration(video.duration),
         "url": video.url
     }
+    
+    # thumbnail_urlが存在する場合は追加
+    if hasattr(video, 'thumbnail_url'):
+        result["thumbnail_url"] = video.thumbnail_url
+        
+    return result

@@ -90,12 +90,14 @@ class DbVideoRepository(VideoRepository):
                 video_id = getattr(db_video, 'video_id')
                 title = getattr(db_video, 'title')
                 duration_seconds = getattr(db_video, 'duration_seconds')
+                thumbnail_url = getattr(db_video, 'thumbnail_url', None)
                 
                 videos.append(Video(
                     id=video_id,
                     title=title,
                     duration=duration_seconds,
-                    url=f"https://www.youtube.com/watch?v={video_id}"
+                    url=f"https://www.youtube.com/watch?v={video_id}",
+                    thumbnail_url=thumbnail_url
                 ))
             
             return videos

@@ -30,27 +30,51 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
           flexWrap: { xs: "wrap", sm: "nowrap" },
         }}
       >
-        <Typography
-          variant="h6"
+        <Box
           sx={{
-            fontWeight: "medium",
-            color: "text.primary",
+            display: "flex",
+            alignItems: "center",
+            flexGrow: 1,
             mr: 2,
             overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: { xs: "normal", sm: "nowrap" },
-            maxWidth: { xs: "100%", sm: "70%" },
-            mb: { xs: 1, sm: 0 },
-            fontSize: { xs: "0.95rem", sm: "1.125rem" },
-            lineHeight: { xs: 1.4, sm: 1.6 },
-            display: "-webkit-box",
-            WebkitLineClamp: { xs: 3, sm: 1 },
-            WebkitBoxOrient: "vertical",
-            wordBreak: "break-word",
           }}
         >
-          {video.title}
-        </Typography>
+          {video.thumbnail_url && (
+            <Box
+              component="img"
+              src={video.thumbnail_url}
+              alt={`${video.title}のサムネイル`}
+              sx={{
+                width: { xs: 80, sm: 120 },
+                height: { xs: 45, sm: 68 },
+                objectFit: "cover",
+                borderRadius: 1,
+                mr: 2,
+                flexShrink: 0,
+              }}
+            />
+          )}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "medium",
+              color: "text.primary",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: { xs: "normal", sm: "nowrap" },
+              maxWidth: { xs: "100%", sm: "100%" },
+              mb: { xs: 1, sm: 0 },
+              fontSize: { xs: "0.95rem", sm: "1.125rem" },
+              lineHeight: { xs: 1.4, sm: 1.6 },
+              display: "-webkit-box",
+              WebkitLineClamp: { xs: 3, sm: 1 },
+              WebkitBoxOrient: "vertical",
+              wordBreak: "break-word",
+            }}
+          >
+            {video.title}
+          </Typography>
+        </Box>
         <Chip
           label={video.duration_formatted}
           color="primary"

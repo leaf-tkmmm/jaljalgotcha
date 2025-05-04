@@ -4,6 +4,7 @@ export interface Video {
   duration: number;
   duration_formatted: string;
   url?: string;
+  thumbnail_url?: string;
 }
 
 export interface VideoCombination {

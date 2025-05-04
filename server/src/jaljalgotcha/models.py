@@ -12,6 +12,7 @@ class Video:
     title: str  # タイトル
     duration: int  # 動画時間（秒）
     url: Optional[str] = None  # 動画URL（オプション）
+    thumbnail_url: Optional[str] = None  # サムネイル画像URL（オプション）
     
     def __post_init__(self):
         """初期化後の処理"""
@@ -21,6 +22,8 @@ class Video:
         self.duration = int(self.duration) if self.duration is not None else 0
         if self.url is not None:
             self.url = str(self.url)
+        if self.thumbnail_url is not None:
+            self.thumbnail_url = str(self.thumbnail_url)
     
     def duration_minutes(self) -> float:
         """動画時間を分単位で返す"""
