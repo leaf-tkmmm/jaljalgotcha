@@ -62,7 +62,7 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: { xs: "normal", sm: "nowrap" },
-              maxWidth: { xs: "100%", sm: "100%" },
+              maxWidth: { xs: "calc(100% - 96px)", sm: "calc(100% - 136px)" },
               mb: { xs: 1, sm: 0 },
               fontSize: { xs: "0.95rem", sm: "1.125rem" },
               lineHeight: { xs: 1.4, sm: 1.6 },
