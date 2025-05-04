@@ -11,7 +11,6 @@ from .db.database import engine
 
 # サービスの初期化と設定
 video_service = get_db_video_service()
-
 # Flaskアプリケーションの初期化
 app = Flask(__name__)
 
@@ -84,6 +83,7 @@ def get_combinations():
         # コンテキストマネージャを抜ける際に自動的にロールバックされる（明示的なcommitがないため）
         return jsonify(result)
 
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if __name__ == '__main__':
     app.run()
