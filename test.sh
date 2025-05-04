@@ -4,8 +4,10 @@ API_BASE="https://jaljalgotcha.onrender.com"
 
 echo "Test: 5分指定"
 curl -G "${API_BASE}/api/combinations" \
-  --data-urlencode "duration=5" \
-  -s | jq .
+    --data-urlencode "duration=5" \
+    --data-urlencode "attempts=3" \
+    --data-urlencode "use_youtube=true" \
+    -s | jq .
 
 # echo "Test: HH:MM:SS指定"
 # curl -G "${API_BASE}/api/combinations" \

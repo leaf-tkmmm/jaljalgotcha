@@ -34,7 +34,15 @@ def get_combinations():
     with Session(engine) as session:
         # リクエストパラメータを取得
         duration_str = request.args.get('duration', '')
-        attempts = int(request.args.get('attempts', 3))
+        
+        # attempsパラメータを安全に取得・変換
+        attempts_str = request.args.get('attempts', '3')
+        try:
+            # 数値部分のみを抽出して変換
+            attempts = int(attempts_str.split('&')[0])
+        except (ValueError, AttributeError):
+            attempts = 3
+            
         use_youtube = request.args.get('use_youtube', 'false').lower() == 'true'
         
         # パラメータのバリデーション
