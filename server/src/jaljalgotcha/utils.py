@@ -83,8 +83,8 @@ def video_to_dict(video: Video) -> Dict[str, Any]:
         "url": video.url
     }
     
-    # thumbnail_urlが存在する場合は追加
-    if hasattr(video, 'thumbnail_url'):
+    # thumbnail_urlがNoneでない場合は追加
+    if video.thumbnail_url is not None:
         result["thumbnail_url"] = video.thumbnail_url
         
     return result
