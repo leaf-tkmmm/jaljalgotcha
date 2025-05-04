@@ -1,13 +1,14 @@
 """
 データベースリポジトリとAPIの統合
 """
-from .repositories.db_repository import DbVideoRepository
+from turtle import setup
+from .repositories.video_repository import DbVideoRepository
 from .db.database import db_session, init_db
 from .di.container import container
 from .services.video_service import VideoService
 
 
-def setup_db_repository():
+def setup_video_repository():
     """
     データベースリポジトリをDIコンテナに登録する
     """
@@ -28,8 +29,5 @@ def get_db_video_service() -> VideoService:
     Returns:
         VideoService: データベースリポジトリを使用するビデオサービス
     """
-    # データベースリポジトリが登録されていない場合は登録
-    if 'db_video_repository' not in container._factory_methods:
-        setup_db_repository()
-    
+    setup_video_repository()
     return container.get('db_video_service')

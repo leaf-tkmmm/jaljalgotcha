@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 # psycopg2のインポートをモックして、実際のDB接続を回避
 with patch.dict(sys.modules, {'psycopg2': MagicMock()}):
-    from src.jaljalgotcha.repositories.db_repository import DbVideoRepository
+    from server.src.jaljalgotcha.repositories.video_repository import DbVideoRepository
     from src.jaljalgotcha.repositories.interfaces import VideoRepository
     from src.jaljalgotcha.db.models_db import VideoModel
 
@@ -61,20 +61,20 @@ def mock_db_session():
 
 
 @pytest.fixture
-def db_repository(mock_db_session):
+def video_repository(mock_db_session):
     """DbVideoRepositoryのインスタンスを提供するフィクスチャ"""
     return DbVideoRepository(mock_db_session)
 
 
-def test_repository_interface(db_repository):
+def test_repository_interface(video_repository):
     """VideoRepositoryインターフェースを実装していることを確認"""
-    assert isinstance(db_repository, VideoRepository)
+    assert isinstance(video_repository, VideoRepository)
 
 
-def test_get_videos_without_filters(db_repository, mock_db_session):
+def test_get_videos_without_filters(video_repository, mock_db_session):
     """フィルターなしで動画を取得するテスト"""
     # リポジトリメソッドを呼び出す
-    videos = db_repository.get_videos()
+    videos = video_repository.get_videos()
     
     # 正しいクエリが実行されたことを確認
     mock_db_session.query.assert_called_once()
@@ -88,7 +88,7 @@ def test_get_videos_without_filters(db_repository, mock_db_session):
     assert videos[1].id == "002"
 
 
-def test_get_videos_with_filters(db_repository, mock_db_session):
+def test_get_videos_with_filters(video_repository, mock_db_session):
     """フィルター付きで動画を取得するテスト"""
     # フィルターを指定
     filters = {
@@ -100,7 +100,7 @@ def test_get_videos_with_filters(db_repository, mock_db_session):
     }
     
     # リポジトリメソッドを呼び出す
-    videos = db_repository.get_videos(filters)
+    videos = video_repository.get_videos(filters)
     
     # 正しいクエリが実行されたことを確認
     mock_query = mock_db_session.query.return_value
@@ -111,7 +111,7 @@ def test_get_videos_with_filters(db_repository, mock_db_session):
     assert len(videos) == 2
 
 
-def test_save_video(db_repository, mock_db_session):
+def test_save_video(video_repository, mock_db_session):
     """動画の保存テスト"""
     # 新しい動画モデルを作成
     new_video = VideoModel(
@@ -132,7 +132,7 @@ def test_save_video(db_repository, mock_db_session):
     mock_query.filter.return_value.first.return_value = None
     
     # 保存を実行
-    result = db_repository.save_video(new_video)
+    result = video_repository.save_video(new_video)
     
     # addとcommitが呼ばれたことを確認
     mock_db_session.add.assert_called_once_with(new_video)

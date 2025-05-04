@@ -4,44 +4,18 @@ Flaskを使用したWeb APIの提供
 """
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from requests import get
 
 from .utils import parse_duration, video_collection_to_dict
-from .repositories.memory_repository import MemoryVideoRepository
-from .repositories.youtube_repository import YouTubeVideoRepository
 from .services.video_service import VideoService
 from .di.container import container
-from .db_integration import get_db_video_service
+from .db_integration import get_db_video_service, setup_video_repository
 
-# サービス設定
-def setup_services(use_youtube_api: bool = False, use_database: bool = False):
-    """
-    アプリケーションサービスの設定
-    
-    Args:
-        use_youtube_api: YouTubeのAPIを使用するかどうか
-        use_database: データベースを使用するかどうか
-    """
-    if use_database:
-        # データベースリポジトリを使用
-        # 既に登録済みの場合は何もしない
-        return get_db_video_service()
-    elif use_youtube_api:
-        # YouTubeリポジトリを使用
-        # API_KEYは環境変数から自動的に取得
-        container.register('video_repository', lambda c: YouTubeVideoRepository())
-    else:
-        # メモリベースのリポジトリを使用
-        container.register('video_repository', lambda c: MemoryVideoRepository())
-    
-    # ビデオサービスを登録
-    container.register('video_service', lambda c: VideoService(c.get('video_repository')))
-
-# デフォルトでメモリベースのリポジトリを使用
-setup_services(use_youtube_api=False, use_database=False)
+# サービスの初期化と設定
+video_service = get_db_video_service()
 
 # Flaskアプリケーションの初期化
 app = Flask(__name__)
-CORS(app)  # すべてのルートでCORS対応を有効化
 
 
 @app.route('/api/combinations')
@@ -62,7 +36,6 @@ def get_combinations():
     duration_str = request.args.get('duration', '')
     attempts = int(request.args.get('attempts', 3))
     use_youtube = request.args.get('use_youtube', 'false').lower() == 'true'
-    use_database = request.args.get('use_database', 'false').lower() == 'true'
     
     # パラメータのバリデーション
     if not duration_str:
@@ -78,13 +51,9 @@ def get_combinations():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     
-    # リポジトリを設定 (YouTube、メモリ、データベースを切り替え)
-    video_service = setup_services(use_youtube_api=use_youtube, use_database=use_database)
-    
     # ビデオサービスが返されなかった場合はコンテナから取得
     if not video_service:
-        video_service = container.get('video_service')
-    
+        raise ValueError("ビデオサービスが取得できませんでした。DIコンテナの設定を確認してください。")
     # 動画の組み合わせを取得
     try:
         combinations = video_service.get_video_combinations(target_duration, attempts)

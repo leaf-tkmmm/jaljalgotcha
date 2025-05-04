@@ -34,3 +34,8 @@ google-api-python-client
 python-dotenv
 sqlalchemy
 isodate==0.6.1
+sqlalchemy
+psycopg2-binary
+google-api-python-client
+python-dotenv
+isodate

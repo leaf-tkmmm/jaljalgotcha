@@ -2,8 +2,8 @@
 依存性注入コンテナの実装
 """
 from typing import Dict, Any, Optional, Type, TypeVar
-from src.jaljalgotcha.repositories.db_repository import DbVideoRepository
-from src.jaljalgotcha.db_integration import db_session
+from src.jaljalgotcha.repositories.video_repository import DbVideoRepository
+from src.jaljalgotcha.db.database import db_session
 
 T = TypeVar('T')
 

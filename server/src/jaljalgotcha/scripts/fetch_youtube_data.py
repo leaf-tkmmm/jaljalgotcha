@@ -18,7 +18,7 @@ sys.path.insert(0, str(project_root))
 
 from src.jaljalgotcha.db.database import init_db, db_session
 from src.jaljalgotcha.db.models_db import VideoModel
-from src.jaljalgotcha.repositories.db_repository import DbVideoRepository
+from src.jaljalgotcha.repositories.video_repository import DbVideoRepository
 from src.jaljalgotcha.config import YOUTUBE_API_KEY, YOUTUBE_CHANNEL_ID
 
 # ロガーの設定

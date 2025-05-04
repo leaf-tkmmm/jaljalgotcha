@@ -71,7 +71,7 @@ class VideoService:
 
         # リポジトリから動画を取得
         videos = self.video_repository.get_videos(filters)
-        
+        print(f"取得した動画の数: {len(videos)}")
         combinations = []
         
         for _ in range(attempts):

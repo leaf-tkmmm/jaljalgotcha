@@ -8,7 +8,7 @@ from datetime import datetime
 
 # psycopg2のインポートをモックして、実際のDB接続を回避
 with patch.dict(sys.modules, {'psycopg2': MagicMock()}):
-    from src.jaljalgotcha.repositories.db_repository import DbVideoRepository
+    from server.src.jaljalgotcha.repositories.video_repository import DbVideoRepository
     from src.jaljalgotcha.services.video_service import VideoService
     from src.jaljalgotcha.db.models_db import VideoModel
     from src.jaljalgotcha.models import Video
@@ -77,15 +77,15 @@ def mock_db_session(mock_db_videos):
 
 
 @pytest.fixture
-def db_repository(mock_db_session):
+def video_repository(mock_db_session):
     """DbVideoRepositoryのインスタンスを提供するフィクスチャ"""
     return DbVideoRepository(mock_db_session)
 
 
 @pytest.fixture
-def video_service(db_repository):
+def video_service(video_repository):
     """VideoServiceのインスタンスを提供するフィクスチャ"""
-    return VideoService(db_repository)
+    return VideoService(video_repository)
 
 
 def test_video_service_with_youtube_filters(video_service, mock_db_session):
