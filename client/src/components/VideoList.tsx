@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Typography, Paper, Box, Divider } from "@mui/material";
 import VideoListItem from "./VideoListItem";
 import { VideoCombination } from "../types";
