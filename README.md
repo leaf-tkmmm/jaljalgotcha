@@ -59,7 +59,33 @@ jaljalgotcha/
 - Python 3.9 以上
 - pip
 
-### クライアント（フロントエンド）のセットアップ
+### プロジェクト全体のセットアップ (推奨)
+
+このプロジェクトにはフロントエンドとバックエンドの両方を簡単にセットアップするための Makefile が含まれています。
+
+```bash
+# Python 仮想環境の作成とセットアップ
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# 依存関係のインストール (サーバーとクライアントの両方)
+make install-deps
+```
+
+### サーバーとクライアントの起動
+
+```bash
+# サーバーとクライアントを同時に起動
+make start
+
+# または個別に起動
+make server  # バックエンドサーバーの起動
+make client  # フロントエンド開発サーバーの起動
+```
+
+### 手動セットアップ（個別に設定する場合）
+
+#### クライアント（フロントエンド）
 
 ```bash
 # client ディレクトリに移動
@@ -72,15 +98,15 @@ pnpm install
 pnpm dev
 ```
 
-### サーバー（バックエンド）のセットアップ
+#### サーバー（バックエンド）
 
 ```bash
+# 仮想環境の作成（プロジェクトルートで実行）
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
 # server ディレクトリに移動
 cd server
-
-# 仮想環境の作成（推奨）
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # 依存関係のインストール
 pip install -r requirements.txt
@@ -90,16 +116,19 @@ cp .env.example .env
 # .envファイルを編集してYOUTUBE_API_KEYを設定（YouTubeデータソースを使用する場合）
 
 # サーバーの起動
-python -m src.jaljalgotcha.main
+python -m flask --app src.jaljalgotcha.main run --debug
 ```
 
 ## 使用方法
 
-1. バックエンドサーバーを起動します（ポート 5000）
-2. フロントエンド開発サーバーを起動します（ポート 5173）
-3. ブラウザで http://localhost:5173 にアクセスします
-4. フォームに希望する時間を入力し、必要に応じて設定を調整します
-5. 「動画組み合わせを取得」ボタンをクリックして結果を取得します
+1. セットアップが完了したら、バックエンドサーバー（ポート 5000）とフロントエンド開発サーバー（ポート 5173）が起動します
+2. ブラウザで http://localhost:5173 にアクセスします
+3. フォームに希望する時間を入力し、必要に応じて設定を調整します
+4. 「動画組み合わせを取得」ボタンをクリックして結果を取得します
+
+## データベースについて
+
+このプロジェクトは SQLite データベースを使用しています。設定は不要で、自動的にプロジェクトルートに `sqlite.db` ファイルが作成されます。
 
 ## YouTube API の設定（オプション）
 
