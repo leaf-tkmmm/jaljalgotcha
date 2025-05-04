@@ -75,10 +75,16 @@ def video_to_dict(video: Video) -> Dict[str, Any]:
     Returns:
         辞書形式のデータ
     """
-    return {
+    result = {
         "id": video.id,
         "title": video.title,
         "duration": video.duration,
         "duration_formatted": format_duration(video.duration),
         "url": video.url
     }
+    
+    # thumbnail_urlがNoneでない場合は追加
+    if video.thumbnail_url is not None:
+        result["thumbnail_url"] = video.thumbnail_url
+        
+    return result
