@@ -1,7 +1,3 @@
-"""
-アプリケーションのエントリーポイント
-Flaskを使用したWeb APIの提供
-"""
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from requests import get
@@ -76,7 +72,4 @@ def get_combinations():
 
 
 if __name__ == '__main__':
-    """
-    開発サーバーとして実行
-    """
-    app.run(debug=True)
+    app.run()
