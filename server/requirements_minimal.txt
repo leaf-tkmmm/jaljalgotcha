@@ -28,7 +28,7 @@ pytz
 requests
 six
 tzdata
-urllib3
+urllib3<2.0.0
 Werkzeug
 google-api-python-client
 python-dotenv
