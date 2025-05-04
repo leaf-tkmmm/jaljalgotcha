@@ -3,7 +3,7 @@
 """
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, Session
 from sqlalchemy.ext.declarative import declarative_base
 
 # データベース接続情報
@@ -21,6 +21,9 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 db_session = scoped_session(SessionLocal)
 
+# 直接Session作成のためのエンジン（コンテキストマネージャで使用）
+session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 # モデルのベースクラス
 Base = declarative_base()
 Base.query = db_session.query_property()
@@ -33,11 +36,9 @@ def get_db():
     Yields:
         SQLAlchemy セッション
     """
-    db = SessionLocal()
-    try:
+    # コンテキストマネージャを使用して自動ロールバック
+    with Session(engine) as db:
         yield db
-    finally:
-        db.close()
 
 
 def init_db():

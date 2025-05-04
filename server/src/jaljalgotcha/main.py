@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from requests import get
+from sqlalchemy.orm import Session
 
 from .utils import parse_duration, video_collection_to_dict
 from .services.video_service import VideoService
 from .di.container import container
 from .db_integration import get_db_video_service, setup_video_repository
+from .db.database import engine
 
 # サービスの初期化と設定
 video_service = get_db_video_service()
@@ -28,47 +30,51 @@ def get_combinations():
     Returns:
         JSON: 動画の組み合わせリスト
     """
-    # リクエストパラメータを取得
-    duration_str = request.args.get('duration', '')
-    attempts = int(request.args.get('attempts', 3))
-    use_youtube = request.args.get('use_youtube', 'false').lower() == 'true'
-    
-    # パラメータのバリデーション
-    if not duration_str:
-        return jsonify({"error": "時間を指定してください"}), 400
-    
-    try:
-        # 時間を秒単位に変換
-        if ':' in duration_str:
-            target_duration = parse_duration(duration_str)
-        else:
-            # 分単位として扱う
-            target_duration = int(duration_str) * 60
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-    
-    # ビデオサービスが返されなかった場合はコンテナから取得
-    if not video_service:
-        raise ValueError("ビデオサービスが取得できませんでした。DIコンテナの設定を確認してください。")
-    # 動画の組み合わせを取得
-    try:
-        combinations = video_service.get_video_combinations(target_duration, attempts)
+    # コンテキストマネージャを使用して自動ロールバック
+    with Session(engine) as session:
+        # リクエストパラメータを取得
+        duration_str = request.args.get('duration', '')
+        attempts = int(request.args.get('attempts', 3))
+        use_youtube = request.args.get('use_youtube', 'false').lower() == 'true'
         
-        # 結果が空でYouTube APIを使用している場合は、API設定が正しくない可能性がある
-        if not combinations and use_youtube:
-            from .config import YOUTUBE_API_KEY
-            if not YOUTUBE_API_KEY or YOUTUBE_API_KEY == "your_youtube_api_key_here":
-                return jsonify({
-                    "error": "YouTube API キーが設定されていません。.envファイルで'YOUTUBE_API_KEY'を設定してください。",
-                    "hint": "YouTubeデータAPIキーを取得して.envファイルに設定する必要があります。"
-                }), 500
-    except Exception as e:
-        return jsonify({"error": f"エラーが発生しました：{str(e)}"}), 500
-    
-    # 結果をJSONに変換
-    result = [video_collection_to_dict(combo) for combo in combinations]
-    
-    return jsonify(result)
+        # パラメータのバリデーション
+        if not duration_str:
+            return jsonify({"error": "時間を指定してください"}), 400
+        
+        try:
+            # 時間を秒単位に変換
+            if ':' in duration_str:
+                target_duration = parse_duration(duration_str)
+            else:
+                # 分単位として扱う
+                target_duration = int(duration_str) * 60
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+        
+        # ビデオサービスが返されなかった場合はコンテナから取得
+        if not video_service:
+            raise ValueError("ビデオサービスが取得できませんでした。DIコンテナの設定を確認してください。")
+        # 動画の組み合わせを取得
+        try:
+            combinations = video_service.get_video_combinations(target_duration, attempts)
+            
+            # 結果が空でYouTube APIを使用している場合は、API設定が正しくない可能性がある
+            if not combinations and use_youtube:
+                from .config import YOUTUBE_API_KEY
+                if not YOUTUBE_API_KEY or YOUTUBE_API_KEY == "your_youtube_api_key_here":
+                    return jsonify({
+                        "error": "YouTube API キーが設定されていません。.envファイルで'YOUTUBE_API_KEY'を設定してください。",
+                        "hint": "YouTubeデータAPIキーを取得して.envファイルに設定する必要があります。"
+                    }), 500
+        except Exception as e:
+            # エラー発生時にセッションはロールバックされる（コンテキストマネージャのexit処理）
+            return jsonify({"error": f"エラーが発生しました：{str(e)}"}), 500
+        
+        # 結果をJSONに変換
+        result = [video_collection_to_dict(combo) for combo in combinations]
+        
+        # コンテキストマネージャを抜ける際に自動的にロールバックされる（明示的なcommitがないため）
+        return jsonify(result)
 
 
 if __name__ == '__main__':
