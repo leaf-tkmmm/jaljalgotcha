@@ -7,12 +7,6 @@ export default defineConfig(
   defineVitestConfig({
     plugins: [react()],
     server: {
-      proxy: {
-        "/api": {
-          target: "https://jaljalgotcha.onrender.com",
-          changeOrigin: true,
-        },
-      },
       host: true,
     },
     test: {

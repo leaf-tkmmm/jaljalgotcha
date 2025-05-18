@@ -1,7 +1,6 @@
 """
 データベースリポジトリとAPIの統合
 """
-from turtle import setup
 from .repositories.video_repository import DbVideoRepository
 from .db.database import db_session, init_db
 from .di.container import container

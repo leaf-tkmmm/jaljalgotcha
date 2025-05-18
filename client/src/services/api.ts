@@ -11,21 +11,21 @@ const api = axios.create({
 export interface GetCombinationsParams {
   duration: string;
   attempts?: number;
-  useYoutube?: boolean;
 }
 
 export const getCombinations = async (
   params: GetCombinationsParams
 ): Promise<VideoCombination[]> => {
   try {
-    const { duration, attempts = 3, useYoutube = false } = params;
-    const response = await api.get<VideoCombination[]>("/combinations", {
+    console.log("getCombinationsのtryの中")
+    const { duration, attempts = 3 } = params;
+    const response = await api.get<VideoCombination[]>(`${import.meta.env.VITE_API_URL}/api/combinations`, {
       params: {
         duration,
-        attempts,
-        use_youtube: useYoutube,
+        attempts
       },
     });
+    console.log(response)
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
