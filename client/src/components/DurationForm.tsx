@@ -16,7 +16,8 @@ interface DurationFormProps {
 
 const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
   const [duration, setDuration] = useState("");
-  const [attempts, setAttempts] = useState("3");
+  // Hardcoded attempts to 1
+  const [attempts] = useState("1");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,23 +69,6 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
                     "&:hover fieldset": {
                       borderColor: "primary.light",
                     },
-                  },
-                }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 1 }}>
-              <TextField
-                fullWidth
-                label="生成する組み合わせの数"
-                type="number"
-                value={attempts}
-                onChange={(e) => setAttempts(e.target.value)}
-                inputProps={{ min: 1, max: 10 }}
-                variant="outlined"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 1.5,
                   },
                 }}
               />
