@@ -7,9 +7,17 @@ interface VideoListItemProps {
 }
 
 const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
+  const handleClick = () => {
+    if (video.url) {
+      window.open(video.url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <Paper
+      onClick={handleClick}
       sx={{
+        cursor: video.url ? "pointer" : "default",
         p: { xs: 2, sm: 3 },
         mb: 2,
         borderRadius: 2,
@@ -89,36 +97,6 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
           }}
         />
       </Box>
-      {video.url && (
-        <Typography
-          variant="body2"
-          sx={{
-            color: "primary.main",
-            mt: 1.5,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: { xs: "normal", sm: "normal" },
-            fontSize: { xs: "0.75rem", sm: "0.875rem" },
-            wordBreak: "break-all",
-            display: "-webkit-box",
-            WebkitLineClamp: { xs: 2, sm: 2 },
-            WebkitBoxOrient: "vertical",
-          }}
-        >
-          <a
-            href={video.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-            }}
-            className="hover:underline"
-          >
-            {video.url}
-          </a>
-        </Typography>
-      )}
     </Paper>
   );
 };
