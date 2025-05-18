@@ -91,6 +91,7 @@ function App() {
   const [combinations, setCombinations] = useState<VideoCombination[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentDuration, setCurrentDuration] = useState<string>("N");
   const videoListRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"light" | "dark">("light");
 
@@ -105,6 +106,7 @@ function App() {
   const handleSubmit = async (params: GetCombinationsParams) => {
     setIsLoading(true);
     setError(null);
+    setCurrentDuration(params.duration);
 
     try {
       const data = await getCombinations(params);
@@ -150,18 +152,7 @@ function App() {
               fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
             }}
           >
-            JalJalGotcha
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              textAlign: "center",
-              color: "text.secondary",
-              mb: 4,
-              fontSize: { xs: "0.875rem", sm: "1rem" },
-            }}
-          >
-            動画の時間組み合わせシステム
+            ジャルジャルのガチャする奴
           </Typography>
         </Box>
 
@@ -186,7 +177,11 @@ function App() {
           <VideoListSkeleton count={3} />
         ) : (
           combinations.length > 0 && (
-            <VideoList ref={videoListRef} combinations={combinations} />
+            <VideoList 
+              ref={videoListRef} 
+              combinations={combinations} 
+              duration={currentDuration}
+            />
           )
         )}
       </Container>

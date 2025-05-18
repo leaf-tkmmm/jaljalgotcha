@@ -75,7 +75,7 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
           fontSize: { xs: "1.25rem", sm: "1.5rem" },
         }}
       >
-        動画の時間組み合わせ検索
+        何分間耐久しますか
       </Typography>
 
       <form onSubmit={handleSubmit}>
@@ -84,7 +84,7 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
             <Box sx={{ mb: 1 }}>
               <TextField
                 fullWidth
-                label="希望する時間（分単位）"
+                label="合計時間(分)"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 required
@@ -93,7 +93,7 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
                 inputProps={{ min: 1, max: 1000 }}
                 variant="outlined"
                 error={!!error}
-                helperText={error || "最大1000分まで指定可能です"}
+                helperText={error || "最大1000分"}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 1.5,
@@ -132,7 +132,7 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
                 },
               }}
             >
-              {isLoading ? "検索中..." : "動画組み合わせを取得"}
+              {isLoading ? "検索中..." : "ガチャ"}
             </Button>
           </Box>
         </Stack>

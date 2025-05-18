@@ -5,10 +5,11 @@ import { VideoCombination } from "../types";
 
 interface VideoListProps {
   combinations: VideoCombination[];
+  duration?: string;
 }
 
 const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
-  ({ combinations }, ref) => {
+  ({ combinations, duration = "N" }, ref) => {
     if (combinations.length === 0) {
       return (
         <Paper
@@ -28,19 +29,6 @@ const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
 
     return (
       <Box sx={{ mt: 5 }} ref={ref}>
-        <Typography
-          variant="h5"
-          component="h2"
-          sx={{
-            mb: { xs: 3, sm: 4 },
-            fontWeight: "medium",
-            color: "primary.main",
-            pl: 1,
-            fontSize: { xs: "1.25rem", sm: "1.5rem" },
-          }}
-        >
-          動画の組み合わせ ({combinations.length})
-        </Typography>
 
         {combinations.map((combo, index) => (
           <Paper
@@ -67,7 +55,7 @@ const VideoList = forwardRef<HTMLDivElement, VideoListProps>(
                   fontSize: { xs: "1.125rem", sm: "1.25rem" },
                 }}
               >
-                組み合わせ {index + 1}
+                計{duration}分間のジャルジャルの動画
               </Typography>
               <Divider sx={{ mb: 3 }} />
             </Box>
