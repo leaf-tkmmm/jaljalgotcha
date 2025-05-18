@@ -22,28 +22,36 @@ def format_duration(seconds: int) -> str:
 
 def parse_duration(duration_str: str) -> int:
     """
-    'HH:MM:SS'または'MM:SS'形式の文字列を秒数に変換する
+    分単位の文字列を秒数に変換する
+    最大1000分（60000秒）まで許容
     
     Args:
-        duration_str: 変換する時間文字列
+        duration_str: 変換する時間文字列（分単位）
     
     Returns:
         秒数
-    """
-    parts = duration_str.split(':')
     
-    if len(parts) == 3:  # HH:MM:SS
-        hours, minutes, seconds = map(int, parts)
-        return hours * 3600 + minutes * 60 + seconds
-    elif len(parts) == 2:  # MM:SS
-        minutes, seconds = map(int, parts)
-        return minutes * 60 + seconds
-    else:
-        try:
-            # 単位が秒の場合
-            return int(duration_str)
-        except ValueError:
-            raise ValueError(f"Invalid duration format: {duration_str}")
+    Raises:
+        ValueError: 無効な形式または最大値を超える場合
+    """
+    try:
+        minutes = int(duration_str)
+        
+        # 正の値であることを確認
+        if minutes <= 0:
+            raise ValueError("時間は正の値である必要があります")
+            
+        # 最大1000分の制限を追加
+        if minutes > 1000:
+            raise ValueError("時間は最大1000分までです")
+            
+        # 秒に変換
+        return minutes * 60
+        
+    except ValueError as e:
+        if str(e).startswith("時間は"):
+            raise e
+        raise ValueError(f"有効な数値を入力してください: {duration_str}")
 
 
 def video_collection_to_dict(collection: VideoCollection) -> Dict[str, Any]:

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -18,9 +18,36 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
   const [duration, setDuration] = useState("");
   // Hardcoded attempts to 1
   const [attempts] = useState("1");
+  const [error, setError] = useState<string | null>(null);
+
+  // Clear error when duration changes
+  useEffect(() => {
+    if (error) setError(null);
+  }, [duration]);
+
+  // Validate duration is a valid number and doesn't exceed 1000 minutes
+  const validateDuration = (durationStr: string): boolean => {
+    const minutes = Number(durationStr);
+    return !isNaN(minutes) && minutes > 0 && minutes <= 1000;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!duration.trim()) {
+      setError("時間を入力してください");
+      return;
+    }
+    
+    if (duration.includes(':')) {
+      setError("HH:MM:SS形式は使用できません。分単位で入力してください");
+      return;
+    }
+    
+    if (!validateDuration(duration)) {
+      setError("有効な数値を入力してください（最大1000分まで）");
+      return;
+    }
 
     onSubmit({
       duration,
@@ -57,12 +84,16 @@ const DurationForm: React.FC<DurationFormProps> = ({ onSubmit, isLoading }) => {
             <Box sx={{ mb: 1 }}>
               <TextField
                 fullWidth
-                label="希望する時間（分単位または HH:MM:SS形式）"
+                label="希望する時間（分単位）"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 required
-                placeholder="例: 30 または 00:30:00"
+                placeholder="例: 30"
+                type="number"
+                inputProps={{ min: 1, max: 1000 }}
                 variant="outlined"
+                error={!!error}
+                helperText={error || "最大1000分まで指定可能です"}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 1.5,

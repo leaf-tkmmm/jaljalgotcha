@@ -49,13 +49,28 @@ def get_combinations():
             return jsonify({"error": "時間を指定してください"}), 400
         
         try:
-            # 時間を秒単位に変換
+            # HH:MM:SS形式は許可しない
             if ':' in duration_str:
-                target_duration = parse_duration(duration_str)
-            else:
+                return jsonify({"error": "HH:MM:SS形式は使用できません。分単位で入力してください"}), 400
+                
+            try:
                 # 分単位として扱う
-                target_duration = int(duration_str) * 60
-        except ValueError as e:
+                minutes = int(duration_str)
+                
+                # 正の値であることを確認
+                if minutes <= 0:
+                    return jsonify({"error": "時間は正の値である必要があります"}), 400
+                    
+                # 最大1000分の制限を追加
+                if minutes > 1000:
+                    return jsonify({"error": "時間は最大1000分までです"}), 400
+                    
+                # 秒に変換
+                target_duration = minutes * 60
+                
+            except ValueError:
+                return jsonify({"error": "有効な数値を入力してください"}), 400
+        except Exception as e:
             return jsonify({"error": str(e)}), 400
         
         # ビデオサービスが返されなかった場合はコンテナから取得
