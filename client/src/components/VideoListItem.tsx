@@ -33,69 +33,76 @@ const VideoListItem: React.FC<VideoListItemProps> = ({ video }) => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: { xs: "wrap", sm: "nowrap" },
+          flexDirection: "column",
+          alignItems: "flex-start",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            flexGrow: 1,
-            mr: 2,
-            overflow: "hidden",
-          }}
-        >
-          {video.thumbnail_url && (
+        {video.thumbnail_url && (
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              mb: 1.5,
+            }}
+          >
             <Box
               component="img"
               src={video.thumbnail_url}
               alt={`${video.title}のサムネイル`}
               sx={{
-                width: { xs: 80, sm: 120 },
-                height: { xs: 45, sm: 68 },
+                width: { xs: 160, sm: 240 },
+                height: { xs: 90, sm: 135 },
                 objectFit: "cover",
                 borderRadius: 1,
-                mr: 2,
                 flexShrink: 0,
               }}
             />
-          )}
+          </Box>
+        )}
+        
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
           <Typography
-            variant="h6"
+            variant="body2"
             sx={{
               fontWeight: "medium",
               color: "text.primary",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              whiteSpace: { xs: "normal", sm: "nowrap" },
-              maxWidth: { xs: "calc(100% - 96px)", sm: "calc(100% - 136px)" },
-              mb: { xs: 1, sm: 0 },
-              fontSize: { xs: "0.95rem", sm: "1.125rem" },
-              lineHeight: { xs: 1.4, sm: 1.6 },
+              fontSize: { xs: "0.85rem", sm: "0.95rem" },
+              lineHeight: 1.4,
               display: "-webkit-box",
-              WebkitLineClamp: { xs: 3, sm: 1 },
+              WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
               wordBreak: "break-word",
+              maxWidth: "75%",
             }}
           >
             {video.title}
           </Typography>
+          
+          <Chip
+            label={video.duration_formatted}
+            color="primary"
+            size="small"
+            sx={{
+              fontWeight: "bold",
+              minWidth: "70px",
+              textAlign: "center",
+              borderRadius: "16px",
+              fontSize: { xs: "0.7rem", sm: "0.75rem" },
+              height: { xs: "24px", sm: "28px" },
+              ml: 1,
+            }}
+          />
         </Box>
-        <Chip
-          label={video.duration_formatted}
-          color="primary"
-          size="medium"
-          sx={{
-            fontWeight: "bold",
-            minWidth: "85px",
-            textAlign: "center",
-            borderRadius: "16px",
-            fontSize: { xs: "0.75rem", sm: "0.875rem" },
-            height: { xs: "28px", sm: "32px" },
-          }}
-        />
       </Box>
     </Paper>
   );
